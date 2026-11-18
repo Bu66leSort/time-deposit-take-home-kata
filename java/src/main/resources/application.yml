@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/timedeposits
+    username: timedeposits
+    password: timedeposits
+    hikari:
+      auto-commit: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        connection:
+          provider_disables_autocommit: true
+        jdbc:
+          batch_size: 50
+        order_updates: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    # "demo" changesets seed sample deposits so Swagger shows data; tests switch it off.
+    contexts: demo
