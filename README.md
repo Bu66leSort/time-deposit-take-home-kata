@@ -132,9 +132,11 @@ before the refactoring). New plans are added by implementing `InterestStrategy` 
 
 ## AI-assisted development
 
-**Tools.** Claude Code (CLI) with Claude Sonnet 5.5, run in the repository. No other agent frameworks.
+**Tools.** Claude Code (CLI), run in the repository. No other agent frameworks.
+- Claude Opus 5.5: planning and architecture discussion, final code review.
+- Claude Sonnet 5.5: implementation.
 
-**Setup / rules.** A global `CLAUDE.md` with working rules was loaded in every session. The relevant ones:
+**Setup / rules.** The working rules are in [`CLAUDE.md`](CLAUDE.md) in the repository root and were loaded in every session. The relevant ones:
 - Discuss 2-3 options with trade-offs before coding on non-trivial tasks; flag architectural forks instead of deciding silently.
 - Keep it minimal: no extra layers, caches or dependencies that were not asked for; do not refactor unrelated code.
 - Java/Spring conventions: constructor injection, MapStruct for mapping, records for DTOs, `BigDecimal` for money,
