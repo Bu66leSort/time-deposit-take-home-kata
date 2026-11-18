@@ -1,5 +1,6 @@
 package org.ikigaidigital.adapter.out.persistence;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +28,9 @@ public class WithdrawalEntity {
     @JoinColumn(name = "time_deposit_id")
     private TimeDepositEntity timeDeposit;
 
+    @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
+    @Column(name = "date", nullable = false)
     private LocalDate date;
 }
