@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-demo-data
+      author: kata
+      context: demo
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO time_deposits (id, plan_type, days, balance, created_on) VALUES
+                (1, 'basic',   20,  1000.00, CURRENT_DATE - 20),
+                (2, 'basic',   45,  1234567.00, CURRENT_DATE - 45),
+                (3, 'student', 100, 5000.00, CURRENT_DATE - 100),
+                (4, 'student', 400, 5000.00, CURRENT_DATE - 400),
+                (5, 'premium', 45,  20000.00, CURRENT_DATE - 45),
+                (6, 'premium', 90,  20000.00, CURRENT_DATE - 90);
+              INSERT INTO withdrawals (id, time_deposit_id, amount, date) VALUES
+                (1, 2, 100.00, CURRENT_DATE - 10),
+                (2, 2, 250.50, CURRENT_DATE - 3),
+                (3, 6, 500.00, CURRENT_DATE - 1);

@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-time-deposits
+      author: kata
+      changes:
+        - createTable:
+            tableName: time_deposits
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: plan_type
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              # Persisted next to created_on because the ТЗ requires it; refreshed on every balance update.
+              - column:
+                  name: days
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: balance
+                  type: numeric(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: date
+                  constraints:
+                    nullable: false
+              # First day of the month interest was last accrued for; NULL = never accrued.
+              - column:
+                  name: last_accrual_month
+                  type: date
+        - createIndex:
+            tableName: time_deposits
+            indexName: idx_time_deposits_accrual
+            columns:
+              - column:
+                  name: last_accrual_month
+  - changeSet:
+      id: 001-create-withdrawals
+      author: kata
+      changes:
+        - createTable:
+            tableName: withdrawals
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: time_deposit_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_withdrawals_time_deposit
+                    references: time_deposits(id)
+              - column:
+                  name: amount
+                  type: numeric(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: withdrawals
+            indexName: idx_withdrawals_time_deposit_id
+            columns:
+              - column:
+                  name: time_deposit_id
