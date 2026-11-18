@@ -1,0 +1,4 @@
+spring:
+  liquibase:
+    # Skip the demo changeset: tests load their own data from dbscripts/.
+    contexts: test
