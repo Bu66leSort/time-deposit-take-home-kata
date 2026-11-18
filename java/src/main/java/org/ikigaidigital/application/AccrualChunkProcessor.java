@@ -2,8 +2,8 @@ package org.ikigaidigital.application;
 
 import lombok.RequiredArgsConstructor;
 import org.ikigaidigital.application.port.out.TimeDepositPort;
-import org.ikigaidigital.domain.TimeDeposit;
-import org.ikigaidigital.domain.TimeDepositCalculator;
+import org.ikigaidigital.TimeDeposit;
+import org.ikigaidigital.TimeDepositCalculator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

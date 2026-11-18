@@ -2,7 +2,7 @@ package org.ikigaidigital.adapter.out.persistence;
 
 import lombok.RequiredArgsConstructor;
 import org.ikigaidigital.application.port.out.TimeDepositPort;
-import org.ikigaidigital.domain.TimeDeposit;
+import org.ikigaidigital.TimeDeposit;
 import org.ikigaidigital.domain.TimeDepositView;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -26,8 +26,7 @@ class TimeDepositPersistenceAdapter implements TimeDepositPort {
 
     @Override
     public void saveAccrued(List<TimeDeposit> deposits, LocalDate month) {
-        // Entities were loaded by lockNotAccrued in the same transaction, so getReferenceById
-        // returns them from the persistence context; changes are flushed in batches on commit.
+        // Entities are already in the persistence context (locked earlier), so no extra SELECT.
         for (TimeDeposit deposit : deposits) {
             mapper.updateEntity(deposit, month, repository.getReferenceById(deposit.getId()));
         }

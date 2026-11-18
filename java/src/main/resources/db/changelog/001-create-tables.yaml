@@ -37,12 +37,6 @@ databaseChangeLog:
               - column:
                   name: last_accrual_month
                   type: date
-        - createIndex:
-            tableName: time_deposits
-            indexName: idx_time_deposits_accrual
-            columns:
-              - column:
-                  name: last_accrual_month
   - changeSet:
       id: 001-create-withdrawals
       author: kata

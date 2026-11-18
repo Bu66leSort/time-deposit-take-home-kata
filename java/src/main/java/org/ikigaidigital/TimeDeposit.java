@@ -1,10 +1,9 @@
-package org.ikigaidigital.domain;
+package org.ikigaidigital;
 
 public class TimeDeposit {
     private int id;
     private String planType;
-    // Assumption: Double is kept because the shared class must not be changed in a breaking way;
-    // the persistence layer stores BigDecimal and converts at the boundary.
+    // Assumption: Double is kept because the shared class must not change in a breaking way.
     private Double balance;
     private int days;
 

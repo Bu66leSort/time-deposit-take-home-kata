@@ -1,4 +1,4 @@
-package org.ikigaidigital.domain;
+package org.ikigaidigital;
 
 import org.ikigaidigital.domain.interest.BasicInterestStrategy;
 import org.ikigaidigital.domain.interest.InterestStrategy;
@@ -31,15 +31,15 @@ public class TimeDepositCalculator {
             double interest = 0;
 
             if (deposit.getDays() > GRACE_PERIOD_DAYS) {
-                // Assumption: an unknown plan type earns no interest (behaviour of the original code).
+                // Assumption: an unknown plan type earns no interest (original behaviour).
                 InterestStrategy strategy = strategies.get(deposit.getPlanType());
                 if (strategy != null) {
                     interest = strategy.monthlyInterest(deposit.getBalance(), deposit.getDays());
                 }
             }
 
-            double a2d = deposit.getBalance() + (new BigDecimal(interest).setScale(2, RoundingMode.HALF_UP)).doubleValue();
-            deposit.setBalance(a2d);
+            double newBalance = deposit.getBalance() + (new BigDecimal(interest).setScale(2, RoundingMode.HALF_UP)).doubleValue();
+            deposit.setBalance(newBalance);
         }
     }
 }

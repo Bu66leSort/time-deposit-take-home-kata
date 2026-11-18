@@ -1,4 +1,4 @@
-package org.ikigaidigital.domain;
+package org.ikigaidigital;
 
 import org.junit.jupiter.api.Test;
 

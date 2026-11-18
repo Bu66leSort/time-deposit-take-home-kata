@@ -1,6 +1,6 @@
 package org.ikigaidigital.application.port.out;
 
-import org.ikigaidigital.domain.TimeDeposit;
+import org.ikigaidigital.TimeDeposit;
 import org.ikigaidigital.domain.TimeDepositView;
 
 import java.time.LocalDate;

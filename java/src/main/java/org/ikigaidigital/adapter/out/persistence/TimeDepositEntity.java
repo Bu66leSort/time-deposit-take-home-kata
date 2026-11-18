@@ -29,8 +29,10 @@ public class TimeDepositEntity {
     @Column(name = "plan_type", nullable = false)
     private String planType;
 
+    @Column(name = "days", nullable = false)
     private int days;
 
+    @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
     @Column(name = "created_on", nullable = false)
@@ -39,7 +41,7 @@ public class TimeDepositEntity {
     @Column(name = "last_accrual_month")
     private LocalDate lastAccrualMonth;
 
-    // @BatchSize loads withdrawals of a whole page in one query instead of N+1.
+    // @BatchSize avoids N+1 when listing a page.
     @OneToMany(mappedBy = "timeDeposit", fetch = FetchType.LAZY)
     @BatchSize(size = 50)
     private List<WithdrawalEntity> withdrawals = new ArrayList<>();

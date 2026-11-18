@@ -1,4 +1,4 @@
 package org.ikigaidigital.adapter.in.rest;
 
-public record UpdateBalancesResponse(int updatedDeposits) {
+public record UpdateBalancesResponse(int updatedDepositsCount) {
 }

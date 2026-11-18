@@ -87,8 +87,8 @@ mvn spring-boot:run           # Liquibase creates the schema and loads 6 demo de
 
 Open Swagger UI: <http://localhost:8080/swagger-ui.html> (OpenAPI JSON: `/v3/api-docs`).
 
-1. `GET /time-deposits` -> "Try it out" -> "Execute": lists deposits with their withdrawals (`page=0`, `size=20`, max 100).
-2. `PATCH /time-deposits/balances` -> "Try it out" -> "Execute": accrues the monthly interest, returns `{"updatedDeposits": N}`.
+1. `GET /api/v1/time-deposits` -> "Try it out" -> "Execute": lists deposits with their withdrawals (`page=0`, `size=20`, max 100).
+2. `PATCH /api/v1/time-deposits/balances` -> "Try it out" -> "Execute": accrues the monthly interest, returns `{"updatedDepositsCount": N}`.
 3. Call `GET` again to see the new balances. A second `PATCH` in the same month returns `0`.
 
 Tests (need Docker, PostgreSQL runs in Testcontainers): `cd java && mvn test`.
@@ -96,8 +96,8 @@ Tests (need Docker, PostgreSQL runs in Testcontainers): `cd java && mvn test`.
 ## Architecture (hexagonal)
 
 ```
-org.ikigaidigital
-├── domain                  TimeDeposit, TimeDepositCalculator, Withdrawal, TimeDepositView
+org.ikigaidigital           TimeDeposit, TimeDepositCalculator (shared classes, original package kept)
+├── domain                  Withdrawal, TimeDepositView
 │   └── interest            InterestStrategy + basic / student / premium
 ├── application             TimeDepositService (use cases), AccrualChunkProcessor
 │   └── port.in / port.out  UpdateBalancesUseCase, GetTimeDepositsUseCase / TimeDepositPort
@@ -113,13 +113,16 @@ before the refactoring). New plans are added by implementing `InterestStrategy` 
 
 - **Balance is net of withdrawals.** Somebody else already deducted them; `updateBalance` does not read them, so
   `withdrawals` are returned by GET as history only. A withdrawal endpoint is out of scope (exactly two endpoints are required).
-- **HTTP method.** `PATCH /time-deposits/balances` (partial update of balances). It is idempotent per calendar month.
+- **HTTP method.** `PATCH /api/v1/time-deposits/balances` (partial update of balances). It is idempotent per calendar month.
 - **Interest is accrued once per calendar month per deposit** (`last_accrual_month`). Calling the endpoint repeatedly
   in a month does nothing. A deposit in its 30-day grace period is also marked for that month and starts earning in the next run.
+- **Missed months are not caught up.** The endpoint is expected to be triggered every month (e.g. by a scheduler);
+  if a month is skipped, the next run accrues interest for the current month only.
 - **`days`** is stored (required by the task) and refreshed on every update, but the source of truth is `created_on`
   (`today - days` at creation); GET and the calculation derive `days` from it using the injected `Clock`.
 - **`TimeDeposit` keeps `Double`** (shared class, no breaking changes). The database stores `numeric(19,2)`; conversion
-  happens in the persistence mapper. The classes were moved to the `domain` package; their API is unchanged.
+  happens in the persistence mapper. `TimeDeposit` and `TimeDepositCalculator` stay in their original package
+  `org.ikigaidigital`, so existing imports keep compiling.
 - **Unknown plan types** earn no interest (as in the original code).
 - **Update runs in chunks of 500** (keyset by id, one transaction per chunk, `PESSIMISTIC_WRITE`, JDBC batching).
   A failing chunk rolls back alone; re-running the endpoint continues with the not yet accrued deposits.
